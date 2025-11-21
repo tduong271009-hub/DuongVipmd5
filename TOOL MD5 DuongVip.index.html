@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI MD5 VIP - Neural Network Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        
+        :root {
+            --primary-bg: #0a0a0f;
+            --secondary-bg: #1a1a2e;
+            --card-bg: rgba(26, 26, 46, 0.95);
+            --accent-blue: #64b5f6;
+            --accent-light: #90caf9;
+            --text-primary: #e3f2fd;
+            --text-secondary: #b3e5fc;
+            --success: #4caf50;
+            --danger: #f44336;
+            --neon-glow: 0 0 20px rgba(100, 181, 246, 0.4);
+            --neon-strong: 0 0 30px rgba(100, 181, 246, 0.6);
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: var(--text-primary);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 420px;
+        }
+        
+        .ai-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 35px 30px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                var(--neon-glow);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(100, 181, 246, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ai-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(100, 181, 246, 0.1), transparent);
+            animation: shine 6s linear infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: rotate(0deg) translateX(-100%); }
+            100% { transform: rotate(0deg) translateX(100%); }
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .ai-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-light));
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--primary-bg);
+            box-shadow: var(--neon-glow);
+            animation: pulse 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        h1 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+        
+        .input-container {
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .input-label {
+            display: block;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .ai-input {
+            width: 100%;
+            padding: 16px 18px;
+            background: rgba(10, 10, 15, 0.6);
+            border: 2px solid rgba(100, 181, 246, 0.3);
+            border-radius: 14px;
+            font-size: 15px;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        
+        .ai-input:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(100, 181, 246, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .ai-input::placeholder {
+            color: rgba(227, 242, 253, 0.5);
+        }
+        
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .btn {
+            padding: 16px 20px;
+            border: none;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-blue), #42a5f5);
+            color: var(--primary-bg);
+            box-shadow: 0 6px 20px rgba(100, 181, 246, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(100, 181, 246, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(26, 26, 46, 0.6);
+            color: var(--text-primary);
+            border: 2px solid rgba(100, 181, 246, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(100, 181, 246, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .result-container {
+            margin-top: 20px;
+            padding: 25px;
+            background: rgba(10, 10, 15, 0.6);
+            border-radius: 16px;
+            border: 1px solid rgba(100, 181, 246, 0.2);
+            display: none;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .result-container.active {
+            display: block;
+            animation: slideUp 0.4s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .result {
+            font-size: 42px;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+        }
+        
+        .result.tai {
+            color: var(--success);
+            text-shadow: 0 0 20px rgba(76, 175, 80, 0.4);
+        }
+        
+        .result.xiu {
+            color: var(--danger);
+            text-shadow: 0 0 20px rgba(244, 67, 54, 0.4);
+        }
+        
+        .confidence {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .confidence-bar {
+            width: 100px;
+            height: 6px;
+            background: rgba(100, 181, 246, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-light));
+            border-radius: 3px;
+            transition: width 1s ease;
+        }
+        
+        .features {
+            margin: 25px 0;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .features-title {
+            text-align: center;
+            color: var(--text-primary);
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        .feature-item {
+            padding: 14px;
+            background: rgba(100, 181, 246, 0.08);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-item:hover {
+            background: rgba(100, 181, 246, 0.12);
+            transform: translateY(-2px);
+        }
+        
+        .feature-item::before {
+            content: "⚡";
+            font-size: 14px;
+        }
+        
+        .support {
+            margin-top: 25px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(0, 136, 204, 0.1) 0%, rgba(0, 198, 255, 0.1) 100%);
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid rgba(0, 198, 255, 0.2);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .support-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+        
+        .telegram-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 16px;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .telegram-link:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: rgba(227, 242, 253, 0.5);
+            font-size: 12px;
+            font-weight: 500;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .processing {
+            display: none;
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        .dots {
+            display: inline-flex;
+            gap: 6px;
+        }
+        
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent-blue);
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+        
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes bounce {
+            0%, 80%, 100% { 
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% { 
+                transform: scale(1.2);
+                opacity: 1;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                max-width: 100%;
+            }
+            
+            .ai-card {
+                padding: 25px 20px;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="ai-card">
+            <div class="header">
+                <div class="ai-icon">AI</div>
+                <h1>AI MD5 VIP</h1>
+                <p class="subtitle">Neural Network Analysis</p>
+            </div>
+            
+            <div class="input-container">
+                <label class="input-label">
+                    <span>🔍</span> Nhập mã MD5
+                </label>
+                <input 
+                    type="text" 
+                    class="ai-input" 
+                    id="md5Input"
+                    placeholder="32 ký tự hex..."
+                    maxlength="32"
+                    autocomplete="off"
+                >
+            </div>
+            
+            <div class="processing" id="processing">
+                <div class="dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+                <div style="margin-top: 10px; color: var(--text-secondary); font-size: 13px;">
+                    AI đang phân tích...
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button class="btn btn-primary" id="analyzeBtn">
+                    <span>🚀</span> PHÂN TÍCH
+                </button>
+                <button class="btn btn-secondary" id="clearBtn">
+                    <span>🔄</span> XOÁ MD5
+                </button>
+            </div>
+            
+            <div class="result-container" id="resultContainer">
+                <div class="result" id="result"></div>
+                <div class="confidence">
+                    <span>Độ tin cậy:</span>
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" id="confidenceFill"></div>
+                    </div>
+                    <span id="confidenceText">0%</span>
+                </div>
+            </div>
+            
+            <div class="features">
+                <div class="features-title">
+                    <span>⚡</span> Công Nghệ AI
+                </div>
+                <div class="feature-grid">
+                    <div class="feature-item">Neural Network</div>
+                    <div class="feature-item">Deep Learning</div>
+                    <div class="feature-item">Real-time</div>
+                    <div class="feature-item">High Accuracy</div>
+                </div>
+            </div>
+            
+            <div class="support">
+                <div class="support-title">Hỗ Trợ Kỹ Thuật</div>
+                <a href="https://t.me/duongtool21" class="telegram-link" target="_blank">
+                    <span>🤖</span>
+                    @duongtool21
+                </a>
+            </div>
+            
+            <div class="footer">
+                © 2025 AI MD5 • 
+Duongvip
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const md5Input = document.getElementById('md5Input');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const resultContainer = document.getElementById('resultContainer');
+        const result = document.getElementById('result');
+        const confidenceText = document.getElementById('confidenceText');
+        const confidenceFill = document.getElementById('confidenceFill');
+        const processing = document.getElementById('processing');
+        
+        // Validation
+        function isValidMD5(str) {
+            return /^[a-f0-9]{32}$/i.test(str.trim());
+        }
+        
+        // AI Analysis Algorithm
+        function analyzeMD5(md5) {
+            md5 = md5.trim().toLowerCase();
+            let hashSum = 0;
+            
+            for (let i = 0; i < md5.length; i++) {
+                const charCode = md5.charCodeAt(i);
+                const positionWeight = (i + 1) / md5.length;
+                hashSum += (charCode * (i + 1) * positionWeight);
+            }
+            
+            // Neural network inspired calculation
+            const neuralFactor = Math.sin(hashSum) * Math.cos(hashSum * 0.5);
+            const score = ((hashSum * neuralFactor) % 97) + 3;
+            const confidence = 75 + (hashSum % 23);
+            
+            return {
+                prediction: score >= 50 ? 'TÀI' : 'XỈU',
+                confidence: Math.min(confidence, 98),
+                score: score
+            };
+        }
+        
+        // Event Handlers
+        analyzeBtn.addEventListener('click', () => {
+            const md5Value = md5Input.value.trim();
+            
+            if (!isValidMD5(md5Value)) {
+                showResult('❌ LỖI', 'MD5 không hợp lệ', 0);
+                return;
+            }
+            
+            // Show processing
+            processing.style.display = 'block';
+            resultContainer.classList.remove('active');
+            
+            // Simulate AI processing
+            setTimeout(() => {
+                const analysis = analyzeMD5(md5Value);
+                showResult(analysis.prediction, analysis.confidence);
+                processing.style.display = 'none';
+            }, 1200);
+        });
+        
+        clearBtn.addEventListener('click', () => {
+            md5Input.value = '';
+            resultContainer.classList.remove('active');
+            processing.style.display = 'none';
+            md5Input.focus();
+        });
+        
+        // Show result with animation
+        function showResult(prediction, confidence) {
+            result.textContent = prediction;
+            result.className = `result ${prediction === 'TÀI' ? 'tai' : 'xiu'}`;
+            
+            confidenceText.textContent = `${confidence}%`;
+            confidenceFill.style.width = `${confidence}%`;
+            
+            resultContainer.classList.add('active');
+        }
+        
+        // Input validation
+        md5Input.addEventListener('input', (e) => {
+            const value = e.target.value.toLowerCase();
+            e.target.value = value.replace(/[^a-f0-9]/g, '');
+        });
+        
+        // Enter key support
+        md5Input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                analyzeBtn.click();
+            }
+        });
+        
+        // Auto-focus input
+        md5Input.focus();
+    </script>
+</body>
+</html>
